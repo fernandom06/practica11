@@ -34,7 +34,7 @@
            $.ajax({//Se hace una petición de tipo ajax
                method: "GET",
                url: 'https://randomuser.me/api/',
-               data:'results=3'//Se especifica el numero de usuarios que quieres que llegue, esto es gracias a la api que ofrece el servicio web
+               data:'results=50'//Se especifica el numero de usuarios que quieres que llegue, esto es gracias a la api que ofrece el servicio web
            }).done(function (data) {
                //console.log(data);
                //console.log("hola");
@@ -46,14 +46,47 @@
                            texto='';
                            $("#resultado").append("<div class='individual' id='"+contador+"'>");//Crea tantas capas como usuarios llegan con un id
                            //console.log(v);
-                           $.each(v,function (y,b) {
+                           $.each(v,function (y,b) {//recorre cada propiedad del usuario, algunas son objetos que contienen las propiedades definitivas
+                               if (y=='picture'){
+                                   $.each(b,function (ind,val) {//recorre el objeto picture
+                                       if (ind=='large'){//elegimos solo la foto mas grande
+                                           //console.log("hola");
+                                           $("#"+contador+"").append("<img src='"+val+"'>")
+                                       }
+                                   });
+                               }
+                               if (y=='name'){
+                                   $.each(b,function (ind,val) {//recorre el objeto name para obtener nombre y apellido
+                                       if (ind=='first'){
+                                           texto+="<p>"+val+" ";
+                                       }
+                                       if(ind=='last'){
+                                           texto+=val+"</p>";
+                                       }
+                                       console.log(texto);
+                                   })
+                               }
+                               if (y=='email')
+                               texto+="<p>"+b+"</p>";
+                               if (y=='location'){
+                                   $.each(b,function (ind,val) {//recorre el objeto location
+                                       if (ind=='street')
+                                           texto+="<p>"+val;
+                                       if (ind=='postcode')
+                                           texto+=", "+val+", ";
+                                       if (ind=='city')
+                                           texto+=val+" (";
+                                       if (ind=='state')
+                                           texto+=val+")";
+                                   })
+                               }
                                //console.log(b);
-                               if (y=='gender')
-                               texto+=b+"<br>";
+                               /*if (y=='gender')
+                               texto+=b+"<br>";*/
                            });
                            $("#"+contador+"").append(texto);
                            contador++;
-                           $("#resultado").append("</div>");
+                           $("#resultado").append("</div>");//cierra cada div que abrimos para cada individuo
                        });
                    }
                    //console.log(indice);
