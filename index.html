@@ -15,7 +15,7 @@
 </div>
 <div class="container">
     <button class="btn btn-primary btn-lg btn-block" id="boton">Hazlo!</button>
-    <div class="resultado">
+    <div id="resultado">
 
     </div>
 </div>
@@ -27,15 +27,38 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <script>
     $(function () {
-        $("#boton").on("click",function () {
-           $(this).css({
+        $("#boton").on("click",function () {//Cuando se ejecuta el botón
+           $(this).css({//Se oculta el boton
                "display":"none"
            });
-           $.ajax({
+           $.ajax({//Se hace una petición de tipo ajax
                method: "GET",
-               url: 'https://randomuser.me/api/'
-            }).done(function (data) {
-               console.log(data);
+               url: 'https://randomuser.me/api/',
+               data:'results=3'//Se especifica el numero de usuarios que quieres que llegue, esto es gracias a la api que ofrece el servicio web
+           }).done(function (data) {
+               //console.log(data);
+               //console.log("hola");
+               var texto='';
+               var contador=1;
+               $.each(data, function (indice, valor) {//recorre el array que genera el archivo JSON: results e info
+                   if (indice=='results'){
+                       $.each(valor,function (i,v) {//recorremos el objeto results que devuelve la peticion ajax, contiene cada usuario
+                           texto='';
+                           $("#resultado").append("<div class='individual' id='"+contador+"'>");//Crea tantas capas como usuarios llegan con un id
+                           //console.log(v);
+                           $.each(v,function (y,b) {
+                               //console.log(b);
+                               if (y=='gender')
+                               texto+=b+"<br>";
+                           });
+                           $("#"+contador+"").append(texto);
+                           contador++;
+                           $("#resultado").append("</div>");
+                       });
+                   }
+                   //console.log(indice);
+                   //texto+=indice;
+               });
            })
         })
     })
