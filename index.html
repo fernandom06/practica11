@@ -8,6 +8,26 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <style>
+        .individual{
+            height: 128px;
+
+        }
+        .individual:nth-child(2n+1){
+            background-color: #81bc7f;
+        }
+        .foto{
+            position: absolute;
+            /*display: inline-block;*/
+            width: 128px;
+        }
+        .texto{
+            padding-top: 10px;
+            margin-left: 150px;
+            position: absolute;
+            /*display: inline-block;*/
+        }
+    </style>
 </head>
 <body>
 <div class="jumbotron">
@@ -36,22 +56,18 @@
                url: 'https://randomuser.me/api/',
                data:'results=50'//Se especifica el numero de usuarios que quieres que llegue, esto es gracias a la api que ofrece el servicio web
            }).done(function (data) {
-               //console.log(data);
-               //console.log("hola");
                var texto='';
                var contador=1;
                $.each(data, function (indice, valor) {//recorre el array que genera el archivo JSON: results e info
                    if (indice=='results'){
                        $.each(valor,function (i,v) {//recorremos el objeto results que devuelve la peticion ajax, contiene cada usuario
                            texto='';
-                           $("#resultado").append("<div class='individual' id='"+contador+"'>");//Crea tantas capas como usuarios llegan con un id
-                           //console.log(v);
+                           $("#resultado").append("<div class='individual' id='"+contador+"'><div class='foto' id='f"+contador+"'></div><div class='texto' id='t"+contador+"'></div></div>");//Crea tantas capas como usuarios llegan con un id
                            $.each(v,function (y,b) {//recorre cada propiedad del usuario, algunas son objetos que contienen las propiedades definitivas
                                if (y=='picture'){
                                    $.each(b,function (ind,val) {//recorre el objeto picture
                                        if (ind=='large'){//elegimos solo la foto mas grande
-                                           //console.log("hola");
-                                           $("#"+contador+"").append("<img src='"+val+"'>")
+                                           $("#f"+contador+"").append("<img src='"+val+"'>")
                                        }
                                    });
                                }
@@ -63,34 +79,34 @@
                                        if(ind=='last'){
                                            texto+=val+"</p>";
                                        }
-                                       console.log(texto);
                                    })
                                }
                                if (y=='email')
                                texto+="<p>"+b+"</p>";
                                if (y=='location'){
+                                   var calle;
+                                   var postal;
+                                   var ciudad;
+                                   var estado;
                                    $.each(b,function (ind,val) {//recorre el objeto location
                                        if (ind=='street')
-                                           texto+="<p>"+val;
+                                           calle=val;
                                        if (ind=='postcode')
-                                           texto+=", "+val+", ";
+                                           postal=val;
                                        if (ind=='city')
-                                           texto+=val+" (";
+                                           ciudad=val;
                                        if (ind=='state')
-                                           texto+=val+")";
-                                   })
+                                           estado=val;
+                                   });
+                                   texto+="<p>"+calle+", "+postal+", "+ciudad+" ("+estado+")</p>";
+
                                }
-                               //console.log(b);
-                               /*if (y=='gender')
-                               texto+=b+"<br>";*/
                            });
-                           $("#"+contador+"").append(texto);
+                           $("#t"+contador+"").append(texto);
                            contador++;
-                           $("#resultado").append("</div>");//cierra cada div que abrimos para cada individuo
+                           //$("#resultado").append("</div>");//cierra cada div que abrimos para cada individuo
                        });
                    }
-                   //console.log(indice);
-                   //texto+=indice;
                });
            })
         })
